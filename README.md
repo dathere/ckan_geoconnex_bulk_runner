@@ -13,3 +13,15 @@ This runner is expected to be implemented for a water data hub with the relevant
 ```bash
 cargo run --release
 ```
+
+## Run tests
+
+```bash
+cargo test
+```
+
+To include print statements in test output, run:
+
+```bash
+cargo test -- --nocapture
+```
