@@ -1,4 +1,5 @@
 use anyhow::{Result, bail};
+use ckan_geoconnex_bulk_runner::schema::get_location_schema;
 use serde_json::json;
 
 #[test]
@@ -45,7 +46,7 @@ fn validate_usgs_location_jsonld() -> Result<()> {
       }
     });
 
-    let dataset_json_schema = ckan_geoconnex_bulk_runner::get_location_schema();
+    let dataset_json_schema = get_location_schema();
 
     if let Err(e) = jsonschema::validate(&dataset_json_schema, &usgs_location_jsonld) {
         println!("Error during validation:");
