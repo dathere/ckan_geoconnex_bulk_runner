@@ -25,3 +25,9 @@ To include print statements in test output, run:
 ```bash
 cargo test -- --nocapture
 ```
+
+If you have the local dump files setup available you can run those tests with:
+
+```bash
+cargo test -F local -- --nocapture
+```

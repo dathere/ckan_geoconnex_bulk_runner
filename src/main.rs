@@ -1,5 +1,7 @@
 use anyhow::{Result, bail};
-use ckan_geoconnex_bulk_runner::jsonld::construct_dataset_jsonld_from_metadata;
+use ckan_geoconnex_bulk_runner::{
+    jsonld::construct_dataset_jsonld_from_metadata, schema::get_dataset_schema,
+};
 
 // TODO: Ensure error output is only streamed to stderr as per Geoconnex docs
 
@@ -42,21 +44,44 @@ async fn main() -> Result<()> {
                 for dataset_name in dataset_names {
                     // 1. Get the dataset's metadata with /package_show by using the dataset name as the id
                     // TODO: Identify if dataset names are unique
-                    let dataset_metadata = ckan
+                    let package_show_response = ckan
                         .package_show()
                         .id(dataset_name.as_str().unwrap().to_string())
                         .call()
                         .await?;
-                    println!("{dataset_metadata:#?}");
-                    // 2. Construct JSON-LD based on the data from /package_show
-                    let jsonld = construct_dataset_jsonld_from_metadata(dataset_metadata);
-                    println!("{jsonld:#?}");
-                    // 3. Validate the JSON-LD against the dataset JSON schema
-                    // 4. Print the JSON-LD on a new line to stdout
+                    let Some(success) = package_show_response.get("success") else {
+                        bail!(
+                            "CKAN API did not return success key in /package_show response for dataset {dataset_name}. Full response: {response}"
+                        );
+                    };
+                    if success.as_bool().unwrap() {
+                        let Some(dataset_metadata) = package_show_response.get("result") else {
+                            bail!(
+                                "CKAN API did not return result object in /package_show response for dataset {dataset_name}. Full response: {response}"
+                            );
+                        };
+                        // 2. Construct JSON-LD based on the data from /package_show
+                        let jsonld =
+                            construct_dataset_jsonld_from_metadata(dataset_metadata.to_owned());
+                        // 3. Validate the JSON-LD against the dataset JSON schema
+                        if jsonschema::validate(&get_dataset_schema(), &jsonld).is_ok() {
+                            // 4. Print the JSON-LD on a new line to stdout
+                            println!("{jsonld}");
+                        } else {
+                            eprintln!("JSON-LD for {dataset_name} is not valid.");
+                            eprintln!("{jsonld}");
+                        }
+                    } else {
+                        bail!(
+                            "CKAN API returned {{\"success\": false\"}} for /package_show endpoint on dataset {dataset_name}. Full response: {response}"
+                        );
+                    }
                 }
             }
         } else {
-            bail!("CKAN API returned {{\"success\": false\"}}. Full response: {response}");
+            bail!(
+                "CKAN API returned {{\"success\": false\"}} for /package_list endpoint. Full response: {response}"
+            );
         }
         offset = offset + limit;
     }

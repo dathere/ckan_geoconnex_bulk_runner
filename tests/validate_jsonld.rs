@@ -1,6 +1,44 @@
 use anyhow::{Result, bail};
+#[cfg(feature = "local")]
+use ckan_geoconnex_bulk_runner::schema::get_dataset_schema;
 use ckan_geoconnex_bulk_runner::schema::get_location_schema;
 use serde_json::json;
+#[cfg(feature = "local")]
+use std::{
+    fs::File,
+    io::{BufRead, BufReader},
+};
+
+#[test]
+#[cfg(feature = "local")]
+fn validate_sciencebase_dump() -> Result<()> {
+    let file_path = "./tests/sciencebase_jsonld_dump_202605-06.jsonl";
+    if !std::fs::exists(file_path)? {
+        bail!("File path {file_path} does not exist.")
+    }
+
+    let dataset_json_schema = get_dataset_schema();
+
+    // Read JSONL file line-by-line
+    let file = File::open(file_path)?;
+    let reader = BufReader::new(file);
+
+    let mut line_number = 0;
+    for line in reader.lines() {
+        let jsonld: serde_json::Value = serde_json::from_str(line?.as_str())?;
+        if let Err(e) = jsonschema::validate(&dataset_json_schema, &jsonld) {
+            println!("Error during validation on line {line_number}:");
+            println!("JSON-LD:");
+            println!("{jsonld:#?}");
+            bail!("{e}");
+        } else {
+            println!("Successfully validated line {line_number}.");
+            line_number = line_number + 1;
+        }
+    }
+
+    Ok(())
+}
 
 #[test]
 fn validate_usgs_location_jsonld() -> Result<()> {
@@ -46,9 +84,9 @@ fn validate_usgs_location_jsonld() -> Result<()> {
       }
     });
 
-    let dataset_json_schema = get_location_schema();
+    let location_json_schema = get_location_schema();
 
-    if let Err(e) = jsonschema::validate(&dataset_json_schema, &usgs_location_jsonld) {
+    if let Err(e) = jsonschema::validate(&location_json_schema, &usgs_location_jsonld) {
         println!("Error during validation:");
         bail!("{e}");
     } else {
