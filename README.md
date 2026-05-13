@@ -8,7 +8,7 @@ The `ckan_geoconnex_bulk_runner` codebase is meant to run as a container for a b
 
 Refer to the "Contributing via Bulk Containers" documentation here for more information: https://docs.geoconnex.us/contributing/bulk/
 
-This runner is expected to be implemented for a water data hub with the relevant fields and/or [DataPusher+](https://github.com/dathere/datapusher-plus) enabled. For questions reach out to [datHere](https://dathere.com), [Center for Geospatial Solutions](https://cgsearth.org/), or add an issue/discussion.
+This runner is expected to be implemented for a water data hub with the relevant fields and/or ckanext-gztr (not open-source yet) and/or [DataPusher+](https://github.com/dathere/datapusher-plus) enabled. For questions reach out to [datHere](https://dathere.com), [Center for Geospatial Solutions](https://cgsearth.org/), or add an issue/discussion.
 
 ## Installation and setup
 
