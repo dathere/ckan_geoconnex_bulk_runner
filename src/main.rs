@@ -61,8 +61,14 @@ async fn main() -> Result<()> {
                             );
                         };
                         // 2. Construct JSON-LD based on the data from /package_show
-                        let jsonld =
-                            construct_dataset_jsonld_from_metadata(dataset_metadata.to_owned());
+                        let jsonld = match construct_dataset_jsonld_from_metadata(
+                            dataset_metadata.to_owned(),
+                        ) {
+                            Ok(j) => j,
+                            Err(e) => bail!(
+                                "Error while attempting to construct JSON-LD from dataset's metadata: {e}"
+                            ),
+                        };
                         // 3. Validate the JSON-LD against the dataset JSON schema
                         if jsonschema::validate(&get_dataset_schema(), &jsonld).is_ok() {
                             // 4. Print the JSON-LD on a new line to stdout
