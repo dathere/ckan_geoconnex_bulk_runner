@@ -1,5 +1,7 @@
 # ckan_geoconnex_bulk_runner
 
+https://github.com/user-attachments/assets/779fe866-d511-44f3-91a9-a1c2e1cfa189
+
 > Status: This codebase is currently a work in progress and more documentation is planned.
 
 The `ckan_geoconnex_bulk_runner` codebase is meant to run as a container for a bulk integration of a [CKAN](https://ckan.org) instance's relevant datasets and vector geospatial features (e.g. for water data hubs) to the [Geoconnex](https://geoconnex.us) knowledge graph. The codebase ultimately runs as a program outputting to standard output JSON-LD on a new line for each approved dataset/location which the Geoconnex crawler then uses to update the Geoconnex knowledge graph.
