@@ -16,6 +16,12 @@ This runner is expected to be implemented for a water data hub with the relevant
 cargo run --release
 ```
 
+To ignore standard error output and only show valid output:
+
+```bash
+cargo run --release 2>/dev/null
+```
+
 ## Run tests
 
 ```bash
