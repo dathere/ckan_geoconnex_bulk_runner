@@ -13,29 +13,29 @@ This runner is expected to be implemented for a water data hub with the relevant
 ## Installation and setup
 
 ```bash
-cargo run --release
+cargo run -p ckan_geoconnex_bulk_runner --release
 ```
 
 To ignore standard error output and only show valid output:
 
 ```bash
-cargo run --release 2>/dev/null
+cargo run -p ckan_geoconnex_bulk_runner --release  2>/dev/null
 ```
 
 ## Run tests
 
 ```bash
-cargo test
+cargo test -p ckan_geoconnex_bulk_runner
 ```
 
 To include print statements in test output, run:
 
 ```bash
-cargo test -- --nocapture
+cargo test -p ckan_geoconnex_bulk_runner -- --nocapture
 ```
 
 If you have the local dump files setup available you can run those tests with:
 
 ```bash
-cargo test -F local -- --nocapture
+cargo test -p ckan_geoconnex_bulk_runner -F local -- --nocapture
 ```
