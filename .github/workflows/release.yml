@@ -24,3 +24,4 @@ jobs:
           gh release upload ${{github.event.release.tag_name}} ckan-geoconnex-web-resources.jsonl
         env:
           GITHUB_TOKEN: ${{ github.TOKEN }}
+          NMWDC_API_BULK_LOADER_TOKEN: ${{ secrets.NMWDC_API_BULK_LOADER_TOKEN }}
