@@ -1,11 +1,11 @@
 [package]
-name = "ckan_geoconnex_bulk_runner"
+name = "geoconnex_utils"
 version = "0.1.0"
 edition = "2024"
 
 [dependencies]
 anyhow = "1.0.102"
-ckanaction = "0.2.0"
+ckanaction = "0.2.1"
 jsonschema = "0.46.4"
 serde_json = "1.0.149"
 tokio = { version = "1.52.1", features = ["full"] }

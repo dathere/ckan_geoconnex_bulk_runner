@@ -14,9 +14,8 @@ mod ckan_geoconnex_bulk_runner_py {
     fn construct_dataset_jsonld_from_metadata(dataset_metadata: String) -> PyResult<String> {
         match serde_json::to_value(dataset_metadata) {
             Ok(dataset_json) => {
-                match ckan_geoconnex_bulk_runner::jsonld::construct_dataset_jsonld_from_metadata(
-                    dataset_json,
-                ) {
+                match geoconnex_utils::jsonld::construct_dataset_jsonld_from_metadata(dataset_json)
+                {
                     Ok(jsonld) => serde_json::to_string(&jsonld).map_err(|e| {
                         PyException::new_err(format!(
                             "Error when converting JSON-LD to string: {e}"

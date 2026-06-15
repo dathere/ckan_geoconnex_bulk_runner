@@ -5,6 +5,7 @@ pub fn construct_dataset_jsonld_from_metadata(
     dataset_metadata: serde_json::Value,
 ) -> Result<serde_json::Value> {
     let dataset_id = dataset_metadata.get("id").unwrap().as_str().unwrap();
+    eprintln!("Attempting to construct JSON-LD for dataset {dataset_id}");
     let dataset_title = dataset_metadata.get("title").unwrap().as_str().unwrap();
     let organization_name = dataset_metadata
         .get("organization")
@@ -31,7 +32,7 @@ pub fn construct_dataset_jsonld_from_metadata(
             };
             let Some(features) = features_value.as_array() else {
                 bail!(
-                    "Eerror while attempting to take features value as array from spatial_full GeoJSON."
+                    "Error while attempting to take features value as array from spatial_full GeoJSON."
                 );
             };
             for feature in features {
@@ -59,14 +60,14 @@ pub fn construct_dataset_jsonld_from_metadata(
         },
         "@type": "Dataset",
         // TODO: Customize namespace based on CKAN instance being used
-        "@id": format!("https://geoconnex.us/nmwdh/ckan-datasets/{dataset_id}"),
+        "@id": format!("https://geoconnex.us/ckan/sandbox/{dataset_id}"),
         "name": dataset_title,
         "provider": {
             "@type": "Organization",
             "name": organization_name
         },
         // TODO: Customize CKAN instance URL based on CKAN instance being used
-        "url": format!("http://localhost:5000/dataset/{dataset_id}")
+        "url": format!("https://sandbox.opendataportal.us/dataset/{dataset_id}")
     });
     let jsonld_map = jsonld.as_object_mut().unwrap();
     if about.len() > 0 {

@@ -1,14 +1,19 @@
 use anyhow::{Result, bail};
-use ckan_geoconnex_bulk_runner::{
-    jsonld::construct_dataset_jsonld_from_metadata, schema::get_dataset_schema,
-};
-
-// TODO: Ensure error output is only streamed to stderr as per Geoconnex docs
+use geoconnex_utils::{jsonld::construct_dataset_jsonld_from_metadata, schema::get_dataset_schema};
+use std::collections::HashMap;
 
 #[tokio::main]
 async fn main() -> Result<()> {
+    // Identify required header data
+    let Ok(nmwdc_token) = std::env::var("NMWDC_API_BULK_LOADER_TOKEN") else {
+        bail!("Could not find environment variable NMWDC_API_BULK_LOADER_TOKEN.");
+    };
+    let mut headers = HashMap::new();
+    headers.insert("x-geoconnex-runner".to_string(), nmwdc_token);
+
     let ckan = ckanaction::CKAN::builder()
-        .url("http://localhost:5000")
+        .url("https://catalog.newmexicowaterdata.org")
+        .headers(headers)
         .build();
 
     // Paginate through /api/3/action/package_list until only an empty array is returned
@@ -65,9 +70,12 @@ async fn main() -> Result<()> {
                             dataset_metadata.to_owned(),
                         ) {
                             Ok(j) => j,
-                            Err(e) => bail!(
-                                "Error while attempting to construct JSON-LD from dataset's metadata: {e}"
-                            ),
+                            Err(e) => {
+                                eprintln!(
+                                    "Error while attempting to construct JSON-LD from dataset's metadata: {e}"
+                                );
+                                continue;
+                            }
                         };
                         // 3. Validate the JSON-LD against the dataset JSON schema
                         if jsonschema::validate(&get_dataset_schema(), &jsonld).is_ok() {
@@ -75,7 +83,7 @@ async fn main() -> Result<()> {
                             println!("{jsonld}");
                         } else {
                             eprintln!("JSON-LD for {dataset_name} is not valid.");
-                            eprintln!("{jsonld}");
+                            // eprintln!("{jsonld}");
                         }
                     } else {
                         bail!(

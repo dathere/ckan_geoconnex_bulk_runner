@@ -1,0 +1,26 @@
+name: Publish CKAN-Geoconnex JSONL file as latest release
+on:
+  release:
+    types: [published]
+permissions:
+  # To upload to releases
+  contents: write
+jobs:
+  publish:
+    name: Publish JSONL file
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - name: Install Rust stable toolchain
+        uses: dtolnay/rust-toolchain@stable
+      - name: Cache cargo deps and target folder
+        uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: ". -> target"
+      - name: Run generate_release crate and upload JSONL file
+        run: |
+          cd ${{github.workspace}}
+          cargo run -p generate_release --release --verbose > ckan-geoconnex-web-resources.jsonl
+          gh release upload ${{github.event.release.tag_name}} ckan-geoconnex-web-resources.jsonl
+        env:
+          GITHUB_TOKEN: ${{ github.TOKEN }}

@@ -1,7 +1,7 @@
-use anyhow::{Result, bail};
+use anyhow::{bail, Result};
 #[cfg(feature = "local")]
-use ckan_geoconnex_bulk_runner::schema::get_dataset_schema;
-use ckan_geoconnex_bulk_runner::schema::get_location_schema;
+use geoconnex_utils::schema::get_dataset_schema;
+use geoconnex_utils::schema::get_location_schema;
 use serde_json::json;
 #[cfg(feature = "local")]
 use std::{

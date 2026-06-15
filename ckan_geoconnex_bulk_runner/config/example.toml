@@ -1,9 +1,0 @@
-# Example configuration file. Customize for a specific CKAN instance when making a new Docker image.
-
-# This is the path after https://geoconnex.us/ and before /{id}.
-# Same as namespace location at https://github.com/internetofwater/geoconnex.us.
-namespace_path = "nmwdh/ckan-dataset"
-# The base URL for the CKAN instance to run API requests to.
-ckan_url = "http://localhost:5000"
-# The name of the key in /package_show for a given CKAN dataset where the Geoconnex `about` field is populated.
-about_field_name = "geoconnex_about"
