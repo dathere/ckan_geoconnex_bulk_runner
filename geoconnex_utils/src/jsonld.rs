@@ -60,14 +60,14 @@ pub fn construct_dataset_jsonld_from_metadata(
         },
         "@type": "Dataset",
         // TODO: Customize namespace based on CKAN instance being used
-        "@id": format!("https://geoconnex.us/ckan/sandbox/{dataset_id}"),
+        "@id": format!("https://geoconnex.us/ckan/nmwdh/{dataset_id}"),
         "name": dataset_title,
         "provider": {
             "@type": "Organization",
             "name": organization_name
         },
         // TODO: Customize CKAN instance URL based on CKAN instance being used
-        "url": format!("https://sandbox.opendataportal.us/dataset/{dataset_id}")
+        "url": format!("https://catalog.newmexicowaterdata.org/dataset/{dataset_id}")
     });
     let jsonld_map = jsonld.as_object_mut().unwrap();
     if about.len() > 0 {
