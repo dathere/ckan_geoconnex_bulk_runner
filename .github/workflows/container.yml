@@ -21,7 +21,7 @@ jobs:
         uses: docker/build-push-action@v7
         with:
           context: ./bulk_loader
-          file: ./bulk_loader/Dockerfile
+          file: ./Dockerfile
           push: true
           tags: ghcr.io/dathere/ckan_geoconnex_bulk_runner:latest
           cache-from: type=gha,scope=ckan_geoconnex_bulk_runner
