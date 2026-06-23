@@ -25,7 +25,7 @@ jobs:
         with:
           file: ./bulk_loader/Dockerfile
           push: true
-          tags: ghcr.io/dathere/ckan_geoconnex_bulk_runner:latest
+          tags: ghcr.io/dathere/ckan_geoconnex_bulk_runner:${{ matrix.namespace }}
           cache-from: type=gha,scope=ckan_geoconnex_bulk_runner
           platforms: linux/amd64
           cache-to: type=gha,mode=max,scope=ckan_geoconnex_bulk_runner
