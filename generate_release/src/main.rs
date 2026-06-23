@@ -4,15 +4,14 @@ use std::collections::HashMap;
 
 #[tokio::main]
 async fn main() -> Result<()> {
-    // Identify required header data
-    let Ok(nmwdc_token) = std::env::var("NMWDC_API_BULK_LOADER_TOKEN") else {
-        bail!("Could not find environment variable NMWDC_API_BULK_LOADER_TOKEN.");
-    };
+    let namespace = env!("NAMESPACE");
+    let token = env!("API_TOKEN");
+    let instance_url = env!("INSTANCE_URL");
     let mut headers = HashMap::new();
-    headers.insert("x-geoconnex-runner".to_string(), nmwdc_token);
+    headers.insert("x-geoconnex-runner".to_string(), token.to_string());
 
     let ckan = ckanaction::CKAN::builder()
-        .url("https://catalog.newmexicowaterdata.org")
+        .url(instance_url)
         .headers(headers)
         .build();
 
@@ -68,6 +67,8 @@ async fn main() -> Result<()> {
                         // 2. Construct JSON-LD based on the data from /package_show
                         let jsonld = match construct_dataset_jsonld_from_metadata(
                             dataset_metadata.to_owned(),
+                            instance_url.to_string(),
+                            namespace.to_string(),
                         ) {
                             Ok(j) => j,
                             Err(e) => {

@@ -6,6 +6,9 @@ on:
 jobs:
   build_and_push:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        namespace: [New_Mexico_Water_Data_Catalog]
     steps:
       - name: Login to GitHub Container Registry
         uses: docker/login-action@v4
@@ -26,3 +29,5 @@ jobs:
           cache-from: type=gha,scope=ckan_geoconnex_bulk_runner
           platforms: linux/amd64
           cache-to: type=gha,mode=max,scope=ckan_geoconnex_bulk_runner
+        env:
+          NAMESPACE: ${{ matrix.namespace }}

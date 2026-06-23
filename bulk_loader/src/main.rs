@@ -2,9 +2,11 @@ use anyhow::Result;
 
 #[tokio::main]
 async fn main() -> Result<()> {
+    // Get the CKAN instance's Geoconnex namespace to filter for its JSON-LD data
+    let namespace = std::env!("NAMESPACE");
     // Get latest release data which is organized as a single JSONL file
     // at https://github.com/dathere/ckan_geoconnex_bulk_runner/releases/latest
-    let body = reqwest::get("https://github.com/dathere/ckan_geoconnex_bulk_runner/releases/latest/download/ckan-geoconnex-web-resources.jsonl")
+    let body = reqwest::get(format!("https://github.com/dathere/ckan_geoconnex_bulk_runner/releases/latest/download/ckan-geoconnex-web-resources-{namespace}.jsonl"))
         .await?
         .text()
         .await?;

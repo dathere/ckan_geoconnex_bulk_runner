@@ -2,11 +2,21 @@ name: Publish CKAN-Geoconnex JSONL file as latest release
 on:
   release:
     types: [published]
+  workflow_dispatch:
 permissions:
   # To upload to releases
   contents: write
 jobs:
   publish:
+    strategy:
+      matrix:
+        ckan_instance: [
+          {
+            name: New_Mexico_Water_Data_Catalog,
+            url: https://catalog.newmexicowaterdata.org,
+            token: ${{ secrets.NMWDC_API_BULK_LOADER_TOKEN }}
+          }
+        ]
     name: Publish JSONL file
     runs-on: ubuntu-latest
     steps:
@@ -20,8 +30,10 @@ jobs:
       - name: Run generate_release crate and upload JSONL file
         run: |
           cd ${{github.workspace}}
-          cargo run -p generate_release --release --verbose > ckan-geoconnex-web-resources.jsonl
-          gh release upload ${{github.event.release.tag_name}} ckan-geoconnex-web-resources.jsonl
+          cargo run -p generate_release --release --verbose > ckan-geoconnex-web-resources-${{ matrix.namespace }}.jsonl
+          gh release upload ${{github.event.release.tag_name}} ckan-geoconnex-web-resources-${{ matrix.namespace }}.jsonl
         env:
           GITHUB_TOKEN: ${{ github.TOKEN }}
-          NMWDC_API_BULK_LOADER_TOKEN: ${{ secrets.NMWDC_API_BULK_LOADER_TOKEN }}
+          NAMESPACE: ${{ matrix.namespace }}
+          INSTANCE_URL: ${{ matrix.ckan_instance.url }}
+          API_TOKEN: ${{ matrix.ckan_instance.token }}
