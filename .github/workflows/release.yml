@@ -28,6 +28,6 @@ jobs:
           gh release upload ${{github.event.release.tag_name}} ${{ matrix.ckan_instance.name }}.jsonl
         env:
           GITHUB_TOKEN: ${{ github.TOKEN }}
-          NAMESPACE: ${{ matrix.namespace }}
+          NAMESPACE: ${{ matrix.ckan_instance.name }}
           INSTANCE_URL: ${{ matrix.ckan_instance.url }}
           API_TOKEN: ${{ secrets[matrix.ckan_instance.token] }}
