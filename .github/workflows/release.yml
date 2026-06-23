@@ -10,7 +10,7 @@ jobs:
   publish:
     strategy:
       matrix:
-        ckan_instance: [{ name: New_Mexico_Water_Data_Catalog, url: https://catalog.newmexicowaterdata.org, token: ${{ secrets.NMWDC_API_BULK_LOADER_TOKEN }}} ]
+        ckan_instance: [{ name: New_Mexico_Water_Data_Catalog, url: https://catalog.newmexicowaterdata.org, token: NMWDC_API_BULK_LOADER_TOKEN }]
     name: Publish JSONL file
     runs-on: ubuntu-latest
     steps:
@@ -30,4 +30,4 @@ jobs:
           GITHUB_TOKEN: ${{ github.TOKEN }}
           NAMESPACE: ${{ matrix.namespace }}
           INSTANCE_URL: ${{ matrix.ckan_instance.url }}
-          API_TOKEN: ${{ matrix.ckan_instance.token }}
+          API_TOKEN: ${{ secrets[matrix.ckan_instance.token] }}
