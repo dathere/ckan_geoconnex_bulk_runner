@@ -3,6 +3,7 @@ WORKDIR /app
 RUN rustup set profile minimal
 COPY . .
 ARG NAMESPACE
+ENV NAMESPACE=$NAMESPACE
 RUN cargo build -p bulk_loader --release
 
 FROM ubuntu:latest
