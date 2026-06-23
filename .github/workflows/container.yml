@@ -29,5 +29,5 @@ jobs:
           cache-from: type=gha,scope=ckan_geoconnex_bulk_runner
           platforms: linux/amd64
           cache-to: type=gha,mode=max,scope=ckan_geoconnex_bulk_runner
-          build-args:
-            - NAMESPACE=${{ matrix.namespace }}
+          build-args: |
+            NAMESPACE=${{ matrix.namespace }}
