@@ -24,8 +24,8 @@ jobs:
       - name: Run generate_release crate and upload JSONL file
         run: |
           cd ${{github.workspace}}
-          cargo run -p generate_release --release --verbose > ckan-geoconnex-web-resources-${{ matrix.namespace }}.jsonl
-          gh release upload ${{github.event.release.tag_name}} ckan-geoconnex-web-resources-${{ matrix.namespace }}.jsonl
+          cargo run -p generate_release --release --verbose > ${{ matrix.ckan_instance.name }}.jsonl
+          gh release upload ${{github.event.release.tag_name}} ${{ matrix.ckan_instance.name }}.jsonl
         env:
           GITHUB_TOKEN: ${{ github.TOKEN }}
           NAMESPACE: ${{ matrix.namespace }}
