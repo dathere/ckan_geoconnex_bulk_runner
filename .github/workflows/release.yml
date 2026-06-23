@@ -10,13 +10,7 @@ jobs:
   publish:
     strategy:
       matrix:
-        ckan_instance: [
-          {
-            name: New_Mexico_Water_Data_Catalog,
-            url: https://catalog.newmexicowaterdata.org,
-            token: ${{ secrets.NMWDC_API_BULK_LOADER_TOKEN }}
-          }
-        ]
+        ckan_instance: [{ name: New_Mexico_Water_Data_Catalog, url: https://catalog.newmexicowaterdata.org, token: ${{ secrets.NMWDC_API_BULK_LOADER_TOKEN }}} ]
     name: Publish JSONL file
     runs-on: ubuntu-latest
     steps:
