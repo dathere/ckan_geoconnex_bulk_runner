@@ -1,5 +1,5 @@
 use anyhow::{Result, bail};
-use geoconnex_utils::{jsonld::{construct_dataset_jsonld_from_metadata, validate_jsonld_with_nabu}, schema::get_dataset_schema};
+use geoconnex_utils::{jsonld::{validate_jsonld_with_nabu}, schema::get_dataset_schema};
 use std::collections::HashMap;
 
 #[tokio::main]
@@ -46,42 +46,25 @@ async fn main() -> Result<()> {
             } else {
                 // For each dataset in current pagination:
                 for dataset_name in dataset_names {
-                    // 1. Get the dataset's metadata with /package_show by using the dataset name as the id
-                    // TODO: Identify if dataset names are unique
-                    let package_show_response = ckan
-                        .package_show()
+                    // 1. Construct JSON-LD based on the data from /gztr_geoconnex_dataset_jsonld
+                    let geoconnex_jsonld_response = ckan.gztr_geoconnex_dataset_jsonld()
                         .id(dataset_name.as_str().unwrap().to_string())
                         .call()
                         .await?;
-                    let Some(success) = package_show_response.get("success") else {
+                    let Some(success) = geoconnex_jsonld_response.get("success") else {
                         bail!(
-                            "CKAN API did not return success key in /package_show response for dataset {dataset_name}. Full response: {response}"
+                            "CKAN API did not return success key in /gztr_geoconnex_dataset_jsonld response for dataset {dataset_name}. Full response: {response}"
                         );
                     };
                     if success.as_bool().unwrap() {
-                        let Some(dataset_metadata) = package_show_response.get("result") else {
+                        let Some(jsonld) = geoconnex_jsonld_response.get("result") else {
                             bail!(
-                                "CKAN API did not return result object in /package_show response for dataset {dataset_name}. Full response: {response}"
+                                "CKAN API did not return result object in /gztr_geoconnex_dataset_jsonld response for dataset {dataset_name}. Full response: {response}"
                             );
                         };
-                        // 2. Construct JSON-LD based on the data from /package_show
-                        let jsonld = match construct_dataset_jsonld_from_metadata(
-                            dataset_metadata.to_owned(),
-                            instance_url.to_string(),
-                            namespace.to_string(),
-                        ) {
-                            Ok(j) => j,
-                            Err(e) => {
-                                eprintln!(
-                                    "Error while attempting to construct JSON-LD from dataset's metadata: {e}"
-                                );
-                                continue;
-                            }
-                        };
-                        // 3. Validate the JSON-LD against the dataset JSON schema
+                        // 2. Validate the JSON-LD against the nabu SHACL validation Go CLI tool
                         if validate_jsonld_with_nabu(&jsonld).is_ok() {
-                        // if jsonschema::validate(&get_dataset_schema(), &jsonld).is_ok() {
-                            // 4. Print the JSON-LD on a new line to stdout
+                            // 3. Print the JSON-LD on a new line to stdout
                             println!("{jsonld}");
                         } else {
                             eprintln!("JSON-LD for {dataset_name} is not valid.");
@@ -89,7 +72,7 @@ async fn main() -> Result<()> {
                         }
                     } else {
                         bail!(
-                            "CKAN API returned {{\"success\": false\"}} for /package_show endpoint on dataset {dataset_name}. Full response: {response}"
+                            "CKAN API returned {{\"success\": false\"}} for /gztr_geoconnex_dataset_jsonld endpoint on dataset {dataset_name}. Full response: {response}"
                         );
                     }
                 }
