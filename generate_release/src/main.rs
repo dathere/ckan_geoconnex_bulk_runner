@@ -1,5 +1,5 @@
 use anyhow::{Result, bail};
-use geoconnex_utils::{jsonld::{validate_jsonld_with_nabu}, schema::get_dataset_schema};
+use geoconnex_utils::{jsonld::{validate_jsonld_with_nabu}};
 use std::collections::HashMap;
 
 #[tokio::main]
