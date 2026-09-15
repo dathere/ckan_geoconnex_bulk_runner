@@ -22,16 +22,14 @@ pub fn construct_dataset_jsonld_from_metadata(
     namespace: String,
 ) -> Result<serde_json::Value> {
     let dataset_id = dataset_metadata.get("id").unwrap().as_str().unwrap();
-    eprintln!("Attempting to construct JSON-LD for dataset {dataset_id}");
+    eprintln!("Attempting to construct JSON-LD for dataset: {dataset_id}");
     let dataset_title = dataset_metadata.get("title").unwrap().as_str().unwrap();
     let organization_name = dataset_metadata
         .get("organization")
         .unwrap()
         .get("title")
         .unwrap();
-    // TODO: Align and include Geoconnex PIDs for reference feature categories to extract PIDs from them
-    // Then also convert spatial_full FeatureCollection to Multipolygon if needed for gsp:hasGeometry when there are
-    // also non-reference feature polygons
+    // Align and include Geoconnex PIDs for reference feature categories to extract PIDs from them
     let mut about = vec![];
     if let Some(spatial_full) = dataset_metadata.get("spatial_full") {
         let Some(spatial_full_str) = spatial_full.as_str() else {
@@ -58,13 +56,12 @@ pub fn construct_dataset_jsonld_from_metadata(
                         "Error while attempting to get properties from features from spatial_full GeoJSON."
                     );
                 };
-                if let Some(pid) = properties.get("pid") {
-                    let Some(pid_string) = pid.as_str() else {
+                if let Some(geoconnex_pid_string) = properties.get("geoconnex_pid") {
+                    let Some(geoconnex_pid_string) = pid.as_str() else {
                         bail!("Error while attempting to convert PID as str from &Value.");
                     };
                     about.push(json!({
-                        "@id": pid_string,
-                        "@type": "Place"
+                        "@id": geoconnex_pid_string
                     }));
                 }
             }
