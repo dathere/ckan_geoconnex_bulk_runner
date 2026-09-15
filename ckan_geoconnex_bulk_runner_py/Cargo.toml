@@ -11,4 +11,4 @@ name = "ckan_geoconnex_bulk_runner_py"
 [dependencies]
 geoconnex_utils = { path = "../geoconnex_utils" }
 pyo3 = "0.28.3"
-serde_json = "1.0.149"
+serde_json = "1.0.151"

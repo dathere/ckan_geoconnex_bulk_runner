@@ -1,3 +1,4 @@
 /target
 # For local tests
 /**/*/tests/*.jsonl
+.env*

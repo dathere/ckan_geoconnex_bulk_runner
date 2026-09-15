@@ -1,5 +1,20 @@
 use anyhow::{Result, bail};
-use serde_json::json;
+use duct::cmd;
+use serde_json::{Value, json};
+
+pub fn validate_jsonld_with_nabu(jsonld: &Value) -> Result<()> {
+    let validation_output = cmd("docker", &[
+        "run",
+        "internetofwater/nabu:latest",
+        "shacl",
+        "-"
+    ]).stdin_bytes(jsonld.to_string()).unchecked().run()?;
+    if validation_output.status.success() {
+        Ok(())
+    } else {
+        bail!(format!("Error while validating JSON-LD with nabu: {}", String::from_utf8(validation_output.stderr)?))
+    }
+}
 
 pub fn construct_dataset_jsonld_from_metadata(
     dataset_metadata: serde_json::Value,
@@ -61,14 +76,14 @@ pub fn construct_dataset_jsonld_from_metadata(
             "gsp": "http://www.opengis.net/ont/geosparql#",
         },
         "@type": "Dataset",
-        // TODO: Customize namespace based on CKAN instance being used
+        // Customize namespace based on CKAN instance being used
         "@id": format!("https://geoconnex.us/ckan/{namespace}/{dataset_id}"),
         "name": dataset_title,
         "provider": {
             "@type": "Organization",
             "name": organization_name
         },
-        // TODO: Customize CKAN instance URL based on CKAN instance being used
+        // Customize CKAN instance URL based on CKAN instance being used
         "url": format!("{instance_url}/dataset/{dataset_id}")
     });
     let jsonld_map = jsonld.as_object_mut().unwrap();

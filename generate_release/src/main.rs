@@ -1,5 +1,5 @@
 use anyhow::{Result, bail};
-use geoconnex_utils::{jsonld::construct_dataset_jsonld_from_metadata, schema::get_dataset_schema};
+use geoconnex_utils::{jsonld::{construct_dataset_jsonld_from_metadata, validate_jsonld_with_nabu}, schema::get_dataset_schema};
 use std::collections::HashMap;
 
 #[tokio::main]
@@ -79,7 +79,8 @@ async fn main() -> Result<()> {
                             }
                         };
                         // 3. Validate the JSON-LD against the dataset JSON schema
-                        if jsonschema::validate(&get_dataset_schema(), &jsonld).is_ok() {
+                        if validate_jsonld_with_nabu(&jsonld).is_ok() {
+                        // if jsonschema::validate(&get_dataset_schema(), &jsonld).is_ok() {
                             // 4. Print the JSON-LD on a new line to stdout
                             println!("{jsonld}");
                         } else {

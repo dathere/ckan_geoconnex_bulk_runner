@@ -1,8 +1,13 @@
 name: Publish CKAN-Geoconnex JSONL file as latest release
 on:
-  release:
-    types: [published]
+  # release:
+  #   types: [published]
   workflow_dispatch:
+    inputs:
+      release_version:
+        description: 'Release name (version)'
+        required: true
+        type: string
 permissions:
   # To upload to releases
   contents: write
