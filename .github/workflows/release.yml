@@ -17,7 +17,7 @@ jobs:
       matrix:
         # ckan_instance: [{ name: New_Mexico_Water_Data_Catalog, url: https://catalog.newmexicowaterdata.org, token: NMWDC_API_BULK_LOADER_TOKEN }]
         ckan_instance: [{ name: datHere_Sandbox_Catalog, url: https://sandbox.opendataportal.us, token: NMWDC_API_BULK_LOADER_TOKEN }]
-    name: Publish JSONL file
+    name: Generate release, publish JSONL file
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
