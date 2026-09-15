@@ -1,4 +1,4 @@
-name: Publish bulk loader Docker container
+name: Publish bulk loader Docker images for each CKAN instance
 
 on:
   workflow_dispatch:

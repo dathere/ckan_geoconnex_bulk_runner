@@ -1,4 +1,4 @@
-name: Publish CKAN-Geoconnex JSONL file as latest release
+name: Generate release, publish CKAN-Geoconnex JSONL file as latest release
 on:
   # release:
   #   types: [published]
