@@ -7,8 +7,8 @@ pub fn validate_jsonld_with_nabu(jsonld: &Value) -> Result<()> {
         "run",
         "internetofwater/nabu:latest",
         "shacl",
-        "-"
-    ]).stdin_bytes(jsonld.to_string()).unchecked().run()?;
+        serde_json::to_string(jsonld)?.as_str()
+    ]).unchecked().run()?;
     if validation_output.status.success() {
         Ok(())
     } else {
