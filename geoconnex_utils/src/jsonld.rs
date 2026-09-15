@@ -56,8 +56,8 @@ pub fn construct_dataset_jsonld_from_metadata(
                         "Error while attempting to get properties from features from spatial_full GeoJSON."
                     );
                 };
-                if let Some(geoconnex_pid_string) = properties.get("geoconnex_pid") {
-                    let Some(geoconnex_pid_string) = pid.as_str() else {
+                if let Some(geoconnex_pid) = properties.get("geoconnex_pid") {
+                    let Some(geoconnex_pid_string) = geoconnex_pid.as_str() else {
                         bail!("Error while attempting to convert PID as str from &Value.");
                     };
                     about.push(json!({
