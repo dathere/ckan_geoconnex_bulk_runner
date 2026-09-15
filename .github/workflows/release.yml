@@ -31,6 +31,7 @@ jobs:
         run: |
           cd ${{github.workspace}}
           cargo run -p generate_release --release --verbose > ${{ matrix.ckan_instance.name }}.jsonl
+          gh release create ${{ github.event.inputs.release_version }}
           gh release upload ${{ github.event.inputs.release_version }} ${{ matrix.ckan_instance.name }}.jsonl
         env:
           GITHUB_TOKEN: ${{ github.TOKEN }}
