@@ -20,24 +20,24 @@ async fn main() -> Result<()> {
     let limit = 100;
     loop {
         // TODO: Verify that only public datasets are returned
-        let response = ckan
+        let package_list_response = ckan
             .package_list()
             .offset(offset)
             .limit(limit)
             .call()
             .await?;
         // Verify successful response from CKAN API
-        let Some(success_opt) = response.get("success") else {
-            bail!("CKAN API did not return `success` key. Full response: {response}");
+        let Some(success_opt) = package_list_response.get("success") else {
+            bail!("CKAN API did not return `success` key. Full response: {package_list_response}");
         };
         let Some(success) = success_opt.as_bool() else {
             bail!(
-                "Could not parse success key as boolean from CKAN API. Full response: {response}"
+                "Could not parse success key as boolean from CKAN API. Full response: {package_list_response}"
             );
         };
         if success {
-            let Some(result) = response.get("result") else {
-                bail!("CKAN API did not return `result` key. Full response: {response}");
+            let Some(result) = package_list_response.get("result") else {
+                bail!("CKAN API did not return `result` key. Full response: {package_list_response}");
             };
             // Retrieve dataset names from current pagination
             let dataset_names = result.as_array().unwrap();
@@ -53,13 +53,13 @@ async fn main() -> Result<()> {
                         .await?;
                     let Some(success) = geoconnex_jsonld_response.get("success") else {
                         bail!(
-                            "CKAN API did not return success key in /gztr_geoconnex_dataset_jsonld response for dataset {dataset_name}. Full response: {response}"
+                            "CKAN API did not return success key in /gztr_geoconnex_dataset_jsonld response for dataset {dataset_name}. Full response: {geoconnex_jsonld_response}"
                         );
                     };
                     if success.as_bool().unwrap() {
                         let Some(jsonld) = geoconnex_jsonld_response.get("result") else {
                             bail!(
-                                "CKAN API did not return result object in /gztr_geoconnex_dataset_jsonld response for dataset {dataset_name}. Full response: {response}"
+                                "CKAN API did not return result object in /gztr_geoconnex_dataset_jsonld response for dataset {dataset_name}. Full response: {geoconnex_jsonld_response}"
                             );
                         };
                         // 2. Validate the JSON-LD against the nabu SHACL validation Go CLI tool
@@ -72,14 +72,14 @@ async fn main() -> Result<()> {
                         }
                     } else {
                         bail!(
-                            "CKAN API returned {{\"success\": false\"}} for /gztr_geoconnex_dataset_jsonld endpoint on dataset {dataset_name}. Full response: {response}"
+                            "CKAN API returned {{\"success\": false\"}} for /gztr_geoconnex_dataset_jsonld endpoint on dataset {dataset_name}. Full response: {geoconnex_jsonld_response}"
                         );
                     }
                 }
             }
         } else {
             bail!(
-                "CKAN API returned {{\"success\": false\"}} for /package_list endpoint. Full response: {response}"
+                "CKAN API returned {{\"success\": false\"}} for /package_list endpoint. Full response: {package_list_response}"
             );
         }
         offset = offset + limit;
