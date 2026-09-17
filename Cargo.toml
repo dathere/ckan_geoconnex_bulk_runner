@@ -2,7 +2,6 @@
 resolver = "3"
 members = [
   "bulk_loader",
-  "ckan_geoconnex_bulk_runner_py",
   "generate_release",
   "geoconnex_utils",
 ]
